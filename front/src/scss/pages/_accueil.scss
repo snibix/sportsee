@@ -66,7 +66,7 @@
       justify-content: space-between;
       box-sizing: border-box;
       .graph {
-        width: 270px;
+        width: 260px;
         height: 263px;
         overflow: hidden;
         &-int {
@@ -84,6 +84,11 @@
             padding: 20px 0 0 30px;
             width: 200px;
           }
+        }
+
+        &-score {
+          background-color: #fbfbfb;
+          border-radius: 8px;
         }
       }
     }
