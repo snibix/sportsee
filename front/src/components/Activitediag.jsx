@@ -9,22 +9,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  { name: "1", poids: 68, calories: 330 },
-  { name: "2", poids: 69, calories: 350 },
-  { name: "3", poids: 68, calories: 356 },
-  { name: "4", poids: 65, calories: 350 },
-  { name: "5", poids: 68, calories: 250 },
-  { name: "6", poids: 68, calories: 280 },
-  { name: "7", poids: 69, calories: 280 },
-  { name: "8", poids: 69, calories: 356 },
-  { name: "9", poids: 69, calories: 300 },
-  { name: "10", poids: 69, calories: 330 },
-];
-
 const RoundedBar = ({ x, y, width, height, fill }) => {
   const radius = 5;
-
   return (
     <g>
       <rect
@@ -48,8 +34,14 @@ const RoundedBar = ({ x, y, width, height, fill }) => {
   );
 };
 
-const MyBarChart = () => {
-  const poidsValues = data.map((d) => d.poids);
+const MyBarChart = ({ activity }) => {
+  if (!activity || !activity.sessions) {
+    return <div>Aucune donnée disponible</div>;
+  }
+
+  const data = activity.sessions;
+
+  const poidsValues = data.map((d) => d.kilogram);
   const minPoids = Math.min(...poidsValues);
   const maxPoids = Math.max(...poidsValues);
 
@@ -69,25 +61,23 @@ const MyBarChart = () => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        {/* Axe des Y pour le poids */}
+        <XAxis dataKey="day" />
         <YAxis
-          domain={[minPoids, maxPoids]}
-          ticks={[minPoids - 2, minPoids, maxPoids, maxPoids + 2]}
+          domain={[minPoids - 1, maxPoids + 1]}
+          ticks={[minPoids - 1, minPoids, maxPoids, maxPoids + 1]}
           orientation="right"
           yAxisId="poids"
         />
-        {/* Deuxième axe des Y pour les calories */}
         <YAxis
-          domain={[minCal, maxCal]}
-          ticks={[minCal, maxCal, maxCal - 50]}
+          domain={[minCal - 100, maxCal + 100]}
+          ticks={[minCal, (minCal + maxCal) / 2, maxCal]}
           yAxisId="calories"
           orientation="left"
           hide
         />
         <Tooltip />
         <Bar
-          dataKey="poids"
+          dataKey="kilogram"
           shape={<RoundedBar />}
           fill="#000000"
           barSize={10}

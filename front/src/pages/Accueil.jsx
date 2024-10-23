@@ -1,3 +1,5 @@
+//////////////////////////////////////////////////////////////////// A TERMINER VOIR POUR LE 2 VOIR POUR LE FAIRE ET 3 EME CORRECTION AFFICHER LES NAME DIAGRAMME
+// LE PREMIER ET DERNIER SONT GOOD JUSTE AJUSTER LE CSS
 import calories from "../assets/icon/calories-icon.png";
 import carb from "../assets/icon/carbs-icon.png";
 import fat from "../assets/icon/fat-icon.png";
@@ -9,30 +11,61 @@ import MyLineChart from "../components/Timediag";
 import React, { useState, useEffect } from "react";
 
 const Accueil = () => {
+  // States pour chaque type de données
   const [user, setUser] = useState(null);
+  const [activity, setActivity] = useState(null);
+  const [averageSessions, setAverageSessions] = useState(null);
+  const [performance, setPerformance] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Utiliser useEffect pour récupérer les données
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("http://localhost:3000/user/12");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+
+        // Appels multiples pour chaque type de données
+        const userResponse = await fetch("http://localhost:3000/user/12");
+        const activityResponse = await fetch(
+          "http://localhost:3000/user/12/activity"
+        );
+        const averageSessionsResponse = await fetch(
+          "http://localhost:3000/user/12/average-sessions"
+        );
+        const performanceResponse = await fetch(
+          "http://localhost:3000/user/12/performance"
+        );
+
+        // Vérifier les réponses
+        if (
+          !userResponse.ok ||
+          !activityResponse.ok ||
+          !averageSessionsResponse.ok ||
+          !performanceResponse.ok
+        ) {
+          throw new Error("Erreur de récupération des données");
         }
-        const responseData = await response.json();
-        // On stocke les données de l'utilisateur, pas l'objet complet
-        setUser(responseData.data);
+
+        // Transformer les réponses en JSON
+        const userData = await userResponse.json();
+        const activityData = await activityResponse.json();
+        const averageSessionsData = await averageSessionsResponse.json();
+        const performanceData = await performanceResponse.json();
+
+        // Stocker les données dans les states
+        setUser(userData.data);
+        setActivity(activityData.data);
+        setAverageSessions(averageSessionsData.data);
+        setPerformance(performanceData.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError("Impossible de charger les données de l'utilisateur");
+        setError("Erreur lors de la récupération des données");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, []);
 
   if (isLoading) {
@@ -40,13 +73,11 @@ const Accueil = () => {
   }
 
   if (error) {
-    return <div className="container">Erreur: {error}</div>;
+    return <div className="container">Erreur : {error}</div>;
   }
 
-  if (!user || !user.userInfos) {
-    return (
-      <div className="container">Aucune donnée utilisateur disponible</div>
-    );
+  if (!user || !activity || !averageSessions || !performance) {
+    return <div className="container">Aucune donnée disponible</div>;
   }
 
   const { userInfos, keyData } = user;
@@ -73,7 +104,7 @@ const Accueil = () => {
                 </p>
               </div>
             </div>
-            <MyBarChart />
+            <MyBarChart activity={activity} />
           </div>
           <div className="stats">
             <div className="graph graph-time">
@@ -83,11 +114,11 @@ const Accueil = () => {
               <MyLineChart />
             </div>
             <div className="graph">
-              <MyRadarChart />
+              <MyRadarChart performance={performance} />
             </div>
             <div className="graph graph-score">
               <p className="p-score">Score :</p>
-              <ScoreRadialBarChart />
+              <ScoreRadialBarChart user={user} />
             </div>
           </div>
         </div>

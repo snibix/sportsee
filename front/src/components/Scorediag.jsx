@@ -1,78 +1,75 @@
 import React from "react";
 import {
-  PieChart,
-  Pie,
-  Cell,
+  RadialBarChart,
+  RadialBar,
   ResponsiveContainer,
-  Label,
-  Text,
+  PolarAngleAxis,
 } from "recharts";
 
-const SemiCircleChart = ({ percentage = 12, color = "#FF0000" }) => {
+const ScoreRadialBarChart = ({ user }) => {
+  // Vérification de l'existence des données
+  if (!user || (user.score === undefined && user.todayScore === undefined)) {
+    return <div>Aucune donnée disponible</div>;
+  }
+
+  // Récupère le score (gestion des deux propriétés possibles)
+  const scoreValue = (user.score || user.todayScore) * 100;
+
+  // Données formatées pour le RadialBarChart
   const data = [
-    { name: "Completed", value: percentage },
-    { name: "Remaining", value: 100 - percentage },
+    {
+      name: "Score",
+      value: scoreValue,
+      fill: "#FF0000",
+    },
   ];
 
-  const CustomLabel = ({ viewBox }) => {
-    const { cx, cy } = viewBox;
-    return (
-      <>
-        <Text
-          x={cx}
-          y={cy - 10}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={24}
-          fill="#000"
-        >
-          {`${percentage}%`}
-        </Text>
-        <Text
-          x={cx}
-          y={cy + 15}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={14}
-          fill="#666"
-        >
-          de votre
-        </Text>
-        <Text
-          x={cx}
-          y={cy + 35}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={14}
-          fill="#666"
-        >
-          objectif
-        </Text>
-      </>
-    );
-  };
-
   return (
-    <ResponsiveContainer width="100%" height={200}>
-      <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          startAngle={90}
-          endAngle={450}
-          innerRadius={60}
-          outerRadius={80}
-          paddingAngle={0}
+    <ResponsiveContainer width="100%" height={300}>
+      <RadialBarChart
+        cx="50%"
+        cy="50%"
+        innerRadius="60%"
+        outerRadius="80%"
+        barSize={10}
+        data={data}
+        startAngle={180}
+        endAngle={-180}
+      >
+        <PolarAngleAxis
+          type="number"
+          domain={[0, 100]}
+          angleAxisId={0}
+          tick={false}
+        />
+        <RadialBar
+          background
+          clockWise
           dataKey="value"
+          cornerRadius={10}
+          fill="#FF0000"
+        />
+        <text
+          x="50%"
+          y="45%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ fontSize: "24px" }}
         >
-          <Cell fill={color} />
-          <Cell fill="#F3F3F3" />
-          <Label content={<CustomLabel />} position="center" />
-        </Pie>
-      </PieChart>
+          {`${scoreValue}%`}
+        </text>
+        <text
+          x="50%"
+          y="55%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ fontSize: "16px", fill: "#666666" }}
+        >
+          de votre objectif
+        </text>
+      </RadialBarChart>
     </ResponsiveContainer>
   );
 };
 
-export default SemiCircleChart;
+export default ScoreRadialBarChart;
