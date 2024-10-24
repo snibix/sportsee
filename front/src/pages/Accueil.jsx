@@ -113,7 +113,7 @@ const Accueil = () => {
               </div>
               <MyLineChart />
             </div>
-            <div className="graph">
+            <div className="graph radar-chart">
               <MyRadarChart performance={performance} />
             </div>
             <div className="graph graph-score">

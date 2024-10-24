@@ -6,46 +6,64 @@ import {
   PolarAngleAxis,
   ResponsiveContainer,
 } from "recharts";
+import { performanceTranslations } from "../utils/translate";
 
 const MyRadarChart = ({ performance }) => {
-  // Vérification de l'existence des données
-  if (!performance || !performance.data) {
-    return <div>Aucune donnée disponible</div>;
-  }
+  const performanceData = Array.isArray(performance)
+    ? performance[0]
+    : performance;
 
-  // Vérification de la structure de 'kind'
-  if (!performance.kind || typeof performance.kind !== "object") {
-    return <div>Mapping des performances indisponible</div>;
-  }
+  // Définir l'ordre souhaité des kinds
+  const kindOrder = {
+    6: 0, // intensité
+    5: 1, // vitesse
+    4: 2, // force
+    3: 3, // endurance
+    2: 4, // energy
+    1: 5, // cardio
+  };
 
-  // Création du tableau de données formaté pour le RadarChart
-  const data = performance.data.map((item) => {
-    // Utilise l'index numérique de 'item.kind' pour récupérer le nom du kind
-    const kindName = performance.kind[item.kind.toString()]; // Assure-toi que c'est une string
-    return {
-      subject: kindName || "Inconnu", // S'assurer qu'un nom est présent
-      value: item.value,
-    };
-  });
+  // Formatage des données avec l'ordre personnalisé
+  const data = performanceData.data
+    .map((item) => {
+      const kindName = performanceData.kind[item.kind];
+      return {
+        subject: performanceTranslations.kinds[kindName] || kindName,
+        value: item.value,
+        order: kindOrder[item.kind], // Ajouter l'ordre pour le tri
+      };
+    })
+    // Trier selon l'ordre défini
+    .sort((a, b) => a.order - b.order);
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-        <PolarGrid stroke="#ffffff" />
-        <PolarAngleAxis
-          dataKey="subject"
-          stroke="#ffffff"
-          tick={{ fill: "#ffffff" }}
-        />
-        <Radar
-          name="Performance"
-          dataKey="value"
-          fill="#FF0000"
-          fillOpacity={0.6}
-          stroke="#FF0000"
-        />
-      </RadarChart>
-    </ResponsiveContainer>
+    <div className="radar-chart-container">
+      <ResponsiveContainer width="100%" height={250}>
+        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+          <PolarGrid gridType="polygon" stroke="#FFFFFF" strokeWidth={0.8} />
+          <PolarAngleAxis
+            dataKey="subject"
+            tick={{
+              fill: "#FFFFFF",
+              fontSize: 12,
+              fontWeight: 500,
+              dy: 4,
+              lineHeight: 20,
+            }}
+            stroke="#FFFFFF"
+            tickLine={false}
+          />
+          <Radar
+            name="Performance"
+            dataKey="value"
+            fill="#FF0101"
+            fillOpacity={0.7}
+            stroke="#FF0101"
+            strokeWidth={1}
+          />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

@@ -128,4 +128,17 @@
       }
     }
   }
+  .radar-chart {
+    background-color: #282d30;
+    border-radius: 5px;
+  }
+  .radar-chart-container {
+    padding: 10px;
+  }
+  .recharts-polar-angle-axis-tick-value {
+    transform-origin: center;
+    transform-box: fill-box;
+    /* Ajustez ces valeurs selon vos besoins */
+    letter-spacing: 0.5px;
+  }
 }
