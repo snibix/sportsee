@@ -8,7 +8,7 @@
     }
   }
   p {
-    padding: 50px 0;
+    padding: 30px 0;
     font-size: 18px;
     font-weight: 400;
   }
@@ -27,7 +27,7 @@
     .activite {
       background-color: #fbfbfb;
       border-radius: 10px;
-      padding: 10px;
+      padding: 10px 10px 10px 0;
       width: 835px;
       height: 320px;
       &-header {
@@ -65,6 +65,7 @@
       display: flex;
       justify-content: space-between;
       box-sizing: border-box;
+      margin-top: 15px;
       .graph {
         width: 260px;
         height: 263px;

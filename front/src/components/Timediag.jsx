@@ -1,19 +1,22 @@
 import React from "react";
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { dayTranslations } from "../utils/translate"; // Importer la traduction des jours
 
-// Données pour le line chart
-const data = [
-  { name: "L", dure: 60 },
-  { name: "M", dure: 30 },
-  { name: "M", dure: 40 },
-  { name: "J", dure: 20 },
-  { name: "V", dure: 70 },
-  { name: "S", dure: 10 },
-  { name: "D", dure: 90 },
-];
+const MyLineChart = ({ sessionsData }) => {
+  if (
+    !sessionsData ||
+    !sessionsData.sessions ||
+    sessionsData.sessions.length === 0
+  ) {
+    return <div>Aucune donnée disponible</div>;
+  }
 
-// Composant fonctionnel pour le line chart
-const MyLineChart = () => {
+  // Utilise les sessions pour créer un tableau de données pour le LineChart
+  const data = sessionsData.sessions.map((session) => ({
+    name: dayTranslations.days[session.day], // Remplace le numéro du jour par la lettre correspondante
+    dure: session.sessionLength, // Renomme 'sessionLength' en 'dure' pour le chart
+  }));
+
   return (
     <div className="graph-time">
       <ResponsiveContainer width="110%" height={200}>
@@ -36,7 +39,6 @@ const MyLineChart = () => {
           />
           <Tooltip
             content={({ payload }) => {
-              // Vérifie si on a des données dans le payload
               if (payload && payload.length) {
                 return (
                   <div
@@ -49,7 +51,7 @@ const MyLineChart = () => {
                   >
                     {payload[0].value} min
                   </div>
-                ); // Affiche la valeur avec "min" et un fond sombre
+                );
               }
               return null;
             }}
@@ -60,12 +62,12 @@ const MyLineChart = () => {
             dataKey="dure"
             stroke="#FFFFFF"
             strokeWidth={3}
-            dot={false} // Pas de points par défaut
+            dot={false}
             activeDot={{
-              r: 5, // Rayon du point au survol
+              r: 5,
               stroke: "#FFFFFF",
               strokeWidth: 2,
-            }} // Point au survol
+            }}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -73,5 +75,4 @@ const MyLineChart = () => {
   );
 };
 
-// Exporter le composant
 export default MyLineChart;

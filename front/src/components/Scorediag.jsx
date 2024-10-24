@@ -25,10 +25,10 @@ const ScoreRadialBarChart = ({ user }) => {
   ];
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={250}>
       <RadialBarChart
         cx="50%"
-        cy="50%"
+        cy="40%"
         innerRadius="60%"
         outerRadius="80%"
         barSize={10}
@@ -51,7 +51,7 @@ const ScoreRadialBarChart = ({ user }) => {
         />
         <text
           x="50%"
-          y="45%"
+          y="35%"
           textAnchor="middle"
           dominantBaseline="middle"
           style={{ fontSize: "24px" }}
@@ -60,7 +60,7 @@ const ScoreRadialBarChart = ({ user }) => {
         </text>
         <text
           x="50%"
-          y="55%"
+          y="45%"
           textAnchor="middle"
           dominantBaseline="middle"
           style={{ fontSize: "16px", fill: "#666666" }}

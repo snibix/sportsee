@@ -26,15 +26,15 @@ const Accueil = () => {
         setIsLoading(true);
 
         // Appels multiples pour chaque type de données
-        const userResponse = await fetch("http://localhost:3000/user/12");
+        const userResponse = await fetch("http://localhost:3000/user/18");
         const activityResponse = await fetch(
-          "http://localhost:3000/user/12/activity"
+          "http://localhost:3000/user/18/activity"
         );
         const averageSessionsResponse = await fetch(
-          "http://localhost:3000/user/12/average-sessions"
+          "http://localhost:3000/user/18/average-sessions"
         );
         const performanceResponse = await fetch(
-          "http://localhost:3000/user/12/performance"
+          "http://localhost:3000/user/18/performance"
         );
 
         // Vérifier les réponses
@@ -111,7 +111,7 @@ const Accueil = () => {
               <div>
                 <p className="graph-time-p">Durée moyenne des sessions</p>
               </div>
-              <MyLineChart />
+              <MyLineChart sessionsData={averageSessions} />
             </div>
             <div className="graph radar-chart">
               <MyRadarChart performance={performance} />
