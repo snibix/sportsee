@@ -8,7 +8,7 @@ const Nav = () => {
         <img src={logo} className="nav-list-logo" alt=""></img>
         <div className="nav-list-li">
           <li>
-            <NavLink to="/">Accueil</NavLink>
+            <NavLink to="/user/12">Accueil</NavLink>
           </li>
           <li>
             <NavLink to="/profils">Profils</NavLink>

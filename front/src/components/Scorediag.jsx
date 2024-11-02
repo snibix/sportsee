@@ -6,14 +6,13 @@ import {
   PolarAngleAxis,
 } from "recharts";
 
-const ScoreRadialBarChart = ({ user }) => {
+const ScoreRadialBarChart = ({ score }) => {
   // Vérification de l'existence des données
-  if (!user || (user.score === undefined && user.todayScore === undefined)) {
+  if (!score) {
     return <div>Aucune donnée disponible</div>;
   }
 
-  // Récupère le score (gestion des deux propriétés possibles)
-  const scoreValue = (user.score || user.todayScore) * 100;
+  const scoreValue = score * 100;
 
   // Données formatées pour le RadialBarChart
   const data = [

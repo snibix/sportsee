@@ -7,34 +7,33 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { performanceTranslations } from "../utils/translate";
+import useFetch from "../hooks/useFetch";
 
-const MyRadarChart = ({ performance }) => {
-  const performanceData = Array.isArray(performance)
-    ? performance[0]
-    : performance;
+const MyRadarChart = ({ id }) => {
+  const {
+    data: performance,
+    isLoading,
+    error,
+  } = useFetch(id, "performance", {});
 
-  // Définir l'ordre souhaité des kinds
-  const kindOrder = {
-    6: 0, // intensité
-    5: 1, // vitesse
-    4: 2, // force
-    3: 3, // endurance
-    2: 4, // energy
-    1: 5, // cardio
-  };
+  if (isLoading) {
+    return <div>Chargement en cours ...</div>;
+  }
+
+  if (error) {
+    return <div>Aucune donnée disponible</div>;
+  }
 
   // Formatage des données avec l'ordre personnalisé
-  const data = performanceData.data
+  const data = performance.data
     .map((item) => {
-      const kindName = performanceData.kind[item.kind];
+      const kindName = performance.kind[item.kind];
       return {
         subject: performanceTranslations.kinds[kindName] || kindName,
         value: item.value,
-        order: kindOrder[item.kind], // Ajouter l'ordre pour le tri
       };
     })
-    // Trier selon l'ordre défini
-    .sort((a, b) => a.order - b.order);
+    .reverse();
 
   return (
     <div className="radar-chart-container">

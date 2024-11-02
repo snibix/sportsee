@@ -40,6 +40,9 @@
   background-color: #020203;
   width: 150px;
   height: 91.6vh;
+  @media screen and (max-width: 1300px) {
+    height: 100%;
+  }
   &-list {
     display: flex;
     flex-direction: column;

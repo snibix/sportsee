@@ -1,20 +1,26 @@
 import React from "react";
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { dayTranslations } from "../utils/translate"; // Importer la traduction des jours
+import useFetch from "../hooks/useFetch";
 
-const MyLineChart = ({ sessionsData }) => {
-  if (
-    !sessionsData ||
-    !sessionsData.sessions ||
-    sessionsData.sessions.length === 0
-  ) {
+const MyLineChart = ({ id }) => {
+  const {
+    data: average,
+    isLoading,
+    error,
+  } = useFetch(id, "average-sessions", {});
+
+  if (isLoading) {
+    return <div>Chargement en cours ...</div>;
+  }
+
+  if (error) {
     return <div>Aucune donnée disponible</div>;
   }
 
-  // Utilise les sessions pour créer un tableau de données pour le LineChart
-  const data = sessionsData.sessions.map((session) => ({
-    name: dayTranslations.days[session.day], // Remplace le numéro du jour par la lettre correspondante
-    dure: session.sessionLength, // Renomme 'sessionLength' en 'dure' pour le chart
+  const data = average.sessions.map((item) => ({
+    name: dayTranslations.days[item.day],
+    dure: item.sessionLength,
   }));
 
   return (

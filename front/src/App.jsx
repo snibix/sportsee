@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Navlat from "./components/Navlat";
 
@@ -16,7 +21,8 @@ function App() {
         <div className="content">
           <Navlat />
           <Routes>
-            <Route path="/" element={<Accueil />} />
+            <Route path="/" element={<Navigate to="/user/12" />} />
+            <Route path="/user/:id" element={<Accueil />} />
             <Route path="/profils" element={<Profils />} />
             <Route path="/reglage" element={<Reglage />} />
             <Route path="/communaute" element={<Communaute />} />

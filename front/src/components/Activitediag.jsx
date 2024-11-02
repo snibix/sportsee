@@ -8,46 +8,23 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import useFetch from "../hooks/useFetch";
 
-const RoundedBar = ({ x, y, width, height, fill }) => {
-  const radius = 5;
-  return (
-    <g>
-      <rect
-        x={x}
-        y={y + radius}
-        width={width}
-        height={height - radius}
-        fill={fill}
-      />
-      <path
-        d={`M${x + radius},${y} 
-           L${x + width - radius},${y} 
-           A${radius},${radius} 0 0 1 ${x + width},${y + radius} 
-           L${x + width},${y + height} 
-           L${x},${y + height} 
-           L${x},${y + radius} 
-           A${radius},${radius} 0 0 1 ${x + radius},${y}`}
-        fill={fill}
-      />
-    </g>
-  );
-};
+const MyBarChart = ({ id }) => {
+  const { data: activity, isLoading, error } = useFetch(id, "activity", {});
 
-const MyBarChart = ({ activity }) => {
-  if (!activity || !activity.sessions) {
+  if (isLoading) {
+    return <div>Chargement en cours ...</div>;
+  }
+
+  if (error) {
     return <div>Aucune donnée disponible</div>;
   }
 
-  const data = activity.sessions;
-
-  const poidsValues = data.map((d) => d.kilogram);
-  const minPoids = Math.min(...poidsValues);
-  const maxPoids = Math.max(...poidsValues);
-
-  const calValues = data.map((d) => d.calories);
-  const minCal = Math.min(...calValues);
-  const maxCal = Math.max(...calValues);
+  const data = activity.sessions.map((item, index) => ({
+    ...item,
+    day: index + 1,
+  }));
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -63,14 +40,12 @@ const MyBarChart = ({ activity }) => {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="day" />
         <YAxis
-          domain={[minPoids - 1, maxPoids + 1]}
-          ticks={[minPoids - 1, minPoids, maxPoids, maxPoids + 1]}
+          domain={["dataMin-5", "auto"]}
           orientation="right"
           yAxisId="poids"
         />
         <YAxis
-          domain={[minCal - 100, maxCal + 100]}
-          ticks={[minCal, (minCal + maxCal) / 2, maxCal]}
+          domain={["dataMin-50", "auto"]}
           yAxisId="calories"
           orientation="left"
           hide
@@ -78,14 +53,14 @@ const MyBarChart = ({ activity }) => {
         <Tooltip />
         <Bar
           dataKey="kilogram"
-          shape={<RoundedBar />}
+          radius={[20, 20, 0, 0]}
           fill="#000000"
           barSize={10}
           yAxisId="poids"
         />
         <Bar
           dataKey="calories"
-          shape={<RoundedBar />}
+          radius={[20, 20, 0, 0]}
           fill="#ff0000"
           barSize={10}
           yAxisId="calories"
